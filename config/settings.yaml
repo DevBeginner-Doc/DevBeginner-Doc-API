@@ -1,0 +1,15 @@
+mysql:
+  addr: localhost
+  port: 3306
+  username: root
+  password: 12345678
+  dbname: devbeginner
+  charset: utf8mb4
+
+server:
+  addr: localhost
+  port: 8080
+
+event:
+  codeforces: https://codeforces.com/api/contest.list?gym=false
+  algcontest: https://algcontest.rainng.com/

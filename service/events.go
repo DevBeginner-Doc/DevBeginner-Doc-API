@@ -1,11 +1,13 @@
 package service
 
 import (
+	"compress/gzip"
 	"devbeginner-doc-api/model"
 	"devbeginner-doc-api/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"sort"
 	"time"
@@ -48,17 +50,35 @@ func getCodeforcesEvents() ([]codeforcesEvent, error) {
 		Result []codeforcesEvent `json:"result"`
 	}{}
 	request := gorequest.New().Timeout(10 * time.Second)
-	_, _, errs := request.Get(viper.GetString("event.codeforces")).
+	resp, _, errs := request.Get(viper.GetString("event.codeforces")).
+		Set("Connection", "keep-alive").
 		Set("Content-Encoding", "gzip").
 		Set("Content-Type", "application/json").
 		Set("Accept", "*/*").
-		Set("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6").
-		Set("Cache-Control", "no-cache").
+		Set("Accept-Encoding", "gzip, deflate, br").
 		Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0").
-		EndStruct(&reqBody)
+		EndBytes()
 	if errs != nil {
 		return nil, errors.New("error! failed to make api request")
 	}
+	defer resp.Body.Close()
+
+	gzipBody, err := gzip.NewReader(resp.Body)
+	if err != nil {
+		return nil, errors.New("error! failed to make reader io")
+	}
+	defer gzipBody.Close()
+
+	res, err := io.ReadAll(gzipBody)
+	if err != nil {
+		return nil, errors.New("error! failed to make reader io")
+	}
+
+	err = json.Unmarshal(res, &reqBody)
+	if err != nil {
+		return nil, errors.New("error! failed to make json encode")
+	}
+
 	return reqBody.Result, nil
 }
 

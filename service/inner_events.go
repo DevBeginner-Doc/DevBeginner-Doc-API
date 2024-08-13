@@ -36,6 +36,8 @@ func (p *innerEventsSrvMethod) Get(c *gin.Context) {
 	var res []model.InnerEvent
 	var err error
 	var isRelease bool
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, POST")
 	param := c.Query("release")
 	if param == "" {
 		isRelease = true

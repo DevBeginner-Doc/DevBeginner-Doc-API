@@ -84,6 +84,8 @@ func getAlgContestEvents() ([]algcontestEvent, error) {
 
 func (p *eventsSrvMethod) Get(c *gin.Context) {
 	var res []model.Event
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, POST")
 	param := c.Query("platform")
 	if param == "" {
 		fmt.Println("[Service.Event] 查询数据失败 -> 参数为空!")

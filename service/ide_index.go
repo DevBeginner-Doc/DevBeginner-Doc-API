@@ -34,6 +34,8 @@ func (p *indexSrvMethod) Create(c *gin.Context) {
 }
 
 func (p *indexSrvMethod) Get(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Methods", "GET, POST")
 	var res []model.IdeIndex
 	var err error
 	res, err = database.IdeIndex.Query()

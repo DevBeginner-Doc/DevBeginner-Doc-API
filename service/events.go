@@ -124,7 +124,7 @@ func (p *eventsSrvMethod) Get(c *gin.Context) {
 			tStart := utils.UnixToTime(obj.StartTimeSeconds)
 			tNow := time.Now()
 			tDiff := tStart.Sub(tNow)
-			if obj.Phase != "FINISHED" && obj.Phase != "PENDING_SYSTEM_TEST" {
+			if obj.Phase != "FINISHED" && obj.Phase != "PENDING_SYSTEM_TEST" && obj.Phase != "SYSTEM_TEST" {
 				temp := model.Event{}
 				/*判断比赛状态*/
 				if obj.Phase == "BEFORE" {
